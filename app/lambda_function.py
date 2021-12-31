@@ -22,13 +22,13 @@ class SlackNotice:
             raise
         level = self.getLevel(self.level)
         color = self.getColor(level)
-        text = self.text
+        text = self.toText(self.text)
         main_text = ''
         if level > 1:
             main_text = '<!channel>'
         data = {
             "text": main_text,
-            "attachments":[
+            "attachments": [
                 {
                     "title": self.title,
                     "text": text,
@@ -63,3 +63,8 @@ class SlackNotice:
         if level == 3:
             return "danger"
         return "danger"
+
+    def toText(self, var):
+        if type(var) == str:
+            return var
+        return str(var)
