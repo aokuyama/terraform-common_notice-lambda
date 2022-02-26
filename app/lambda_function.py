@@ -16,6 +16,7 @@ def handle_sns_records(event):
         sns = record["Sns"]
         con = {"title": sns['Subject'], "text": sns['Message']}
         SlackNotice(con).send()
+    return True
 
 
 class SlackNotice:
