@@ -1,9 +1,21 @@
 import requests
 import json
+import os
 
 
 def lambda_handler(event, context):
+    if handle_sns_records(event):
+        return
     SlackNotice(event).send()
+
+
+def handle_sns_records(event):
+    if 'Records' not in event:
+        return False
+    for record in event['Records']:
+        sns = record["Sns"]
+        con = {"title": sns['Subject'], "text": sns['Message']}
+        SlackNotice(con).send()
 
 
 class SlackNotice:
@@ -18,7 +30,8 @@ class SlackNotice:
         return self
 
     def send(self):
-        if not self.url:
+        url = self.getUrl()
+        if not url:
             raise
         level = self.getLevel(self.level)
         color = self.getColor(level)
@@ -36,7 +49,7 @@ class SlackNotice:
                 }
             ]
         }
-        return requests.post(self.url, json.dumps(data))
+        return requests.post(url, json.dumps(data))
 
     def getLevel(self, var):
         if var == None:
@@ -68,3 +81,8 @@ class SlackNotice:
         if type(var) == str:
             return var
         return str(var)
+
+    def getUrl(self):
+        if self.url:
+            return self.url
+        return os.getenv('DEFAULT_SLACK_URL')

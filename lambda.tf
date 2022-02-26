@@ -9,6 +9,11 @@ resource "aws_lambda_function" "app" {
   source_code_hash = data.archive_file.app.output_base64sha256
   runtime          = "python3.7"
   role             = aws_iam_role.iam_for_lambda.arn
+  environment {
+    variables = {
+      "DEFAULT_SLACK_URL" = var.default_slack_url
+    }
+  }
 }
 resource "aws_iam_role" "iam_for_lambda" {
   path = "/service-role/"
