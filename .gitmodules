@@ -1,0 +1,3 @@
+[submodule "py-slack-common_notice"]
+	path = py-slack-common_notice
+	url = git@github.com:aokuyama/py-slack-common_notice.git
